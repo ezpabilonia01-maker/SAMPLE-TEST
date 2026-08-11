@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ezriel Xai's 1st Birthday Invitation</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#087dcc;font-family:Arial,Helvetica,sans-serif}
+.page{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#087dcc}
+.page.active{display:flex}
+.art-wrap{position:relative;width:min(100vw,calc(100vh * var(--ratio)));height:min(100vh,calc(100vw / var(--ratio)));flex:none}
+.art-wrap img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hotspot{position:absolute;border:0;background:transparent;padding:0;margin:0;cursor:pointer;z-index:5}
+.hotspot:focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:16px}
+
+/* Exact hit areas based on the actual artwork, not the phone viewport. */
+#p1Play{left:5%;top:54.5%;width:35%;height:22%}
+#p2Open{left:25%;top:58%;width:50%;height:12%}
+
+#p3DateTime{left:5%;top:67.5%;width:51%;height:17%}
+#p3Venue{left:57%;top:67.5%;width:28%;height:17%}
+#p3Facebook{left:63%;top:80.5%;width:17%;height:3.5%}
+#p3Rsvp{left:21%;top:84.5%;width:58%;height:9%}
+#p3Mommy{left:21%;top:93%;width:28.5%;height:6.5%}
+#p3Daddy{left:50%;top:93%;width:29%;height:6.5%}
+
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,25,60,.68);z-index:50;padding:18px}
+.overlay.show{display:flex}
+.card{width:min(430px,94vw);max-height:90vh;overflow:auto;background:white;border-radius:24px;padding:25px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+.card h2{margin:0 0 14px;color:#0759aa}
+#countdownValue{font-size:25px;font-weight:900;line-height:1.5;color:#087dcc}
+.modal{text-align:left}
+.modal h2{text-align:center}
+.modal label{display:block;margin:10px 0 5px;font-weight:700;color:#174c7a}
+.modal input,.modal textarea{width:100%;padding:12px;border:1px solid #b7d7ee;border-radius:12px;font-size:16px}
+.modal textarea{min-height:90px;resize:vertical}
+.actions{display:flex;gap:10px;margin-top:16px}
+.actions button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:700;cursor:pointer}
+.send{background:#087dcc;color:#fff}.close{background:#e8f1f8;color:#174c7a}
+  /* RSVP SUCCESS POPUP */
+#successModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,25,60,.72);
+  z-index:100;
+  padding:18px;
+}
+
+#successModal.show{
+  display:flex;
+}
+
+.success-card{
+  width:min(430px,94vw);
+  max-height:90vh;
+  overflow:auto;
+  background:linear-gradient(180deg,#ffffff 0%,#f4fbff 100%);
+  border:5px solid #087dcc;
+  border-radius:28px;
+  padding:28px 24px 24px;
+  text-align:center;
+  box-shadow:0 15px 50px rgba(0,0,0,.4);
+  position:relative;
+}
+
+.success-doraemon{
+  width:82px;
+  height:82px;
+  object-fit:cover;
+  border-radius:50%;
+  margin:-65px auto 10px;
+  border:5px solid #087dcc;
+  background:#fff;
+}
+
+.success-title{
+  margin:8px 0 10px;
+  color:#0759aa;
+  font-size:27px;
+  font-weight:900;
+}
+
+.success-thanks{
+  color:#174c7a;
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:18px;
+}
+
+.success-divider{
+  border:0;
+  border-top:2px dashed #8bd7ff;
+  margin:15px 0;
+}
+
+.success-guests-label{
+  color:#087dcc;
+  font-size:17px;
+  font-weight:800;
+}
+
+.success-guests{
+  color:#0759aa;
+  font-size:48px;
+  font-weight:900;
+  margin:4px 0 12px;
+}
+
+.success-note{
+  background:#fff3c4;
+  border:2px solid #ffd45c;
+  border-radius:16px;
+  padding:14px;
+  color:#4d4d4d;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:600;
+  text-align:left;
+}
+
+.success-note strong{
+  color:#e83b5b;
+}
+
+.success-message{
+  color:#087dcc;
+  font-size:17px;
+  font-weight:800;
+  margin:18px 0;
+}
+
+.success-ok{
+  border:0;
+  border-radius:15px;
+  padding:13px 48px;
+  background:#087dcc;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 5px 0 #0759aa;
+}
+
+.success-ok:active{
+  transform:translateY(3px);
+  box-shadow:0 2px 0 #0759aa;
+}
+
+@media(max-width:480px){
+  .success-card{
+    padding:25px 18px 20px;
+  }
+
+  .success-title{
+    font-size:23px;
+  }
+
+  .success-thanks{
+    font-size:18px;
+  }
+
+  .success-guests{
+    font-size:42px;
+  }
+}
+
+.success-photo{
+    width:150px;
+    height:150px;
+    object-fit:contain;
+    display:block;
+    margin:10px auto 5px;
+}
+
+</style>
+</head>
+<body>
+
+<section class="page active" id="page1">
+  <div class="art-wrap" style="--ratio:1.5">
+    <img src="page1.png" alt="Doraemon birthday cover">
+    <button class="hotspot" id="p1Play" aria-label="Play Happy Birthday"></button>
+  </div>
+</section>
+
+<section class="page" id="page2">
+  <div class="art-wrap" style="--ratio:0.76376">
+    <img src="page2.png" alt="You're invited">
+    <button class="hotspot" id="p2Open" aria-label="Open invitation"></button>
+  </div>
+</section>
+
+<section class="page" id="page3">
+  <div class="art-wrap" style="--ratio:1.03854">
+    <img src="page3.png" alt="Ezriel Xai first birthday invitation">
+
+    <button class="hotspot" id="p3DateTime" aria-label="Show countdown"></button>
+
+    <a class="hotspot" id="p3Venue"
+       href="https://www.google.com/maps/search/?api=1&query=Bella%20Tamara%20Private%20Resort%2C%20Block%201%20Lot%2017%2C%20Montevideo%20Subdivision%2C%20Barangay%20Mambog%2C%20Binangonan%2C%20Rizal%2C%20Philippines"
+       target="_blank" rel="noopener noreferrer" aria-label="Open venue"></a>
+
+    <a class="hotspot" id="p3Facebook"
+       href="https://www.facebook.com/profile.php?id=61581894641011"
+       target="_blank" rel="noopener noreferrer" aria-label="Bella Tamara Facebook"></a>
+
+    <button class="hotspot" id="p3Rsvp" aria-label="Open RSVP"></button>
+
+    <a class="hotspot" id="p3Mommy"
+       href="https://www.facebook.com/ennaxorsajor"
+       target="_blank" rel="noopener noreferrer" aria-label="Mommy Facebook"></a>
+
+    <a class="hotspot" id="p3Daddy"
+       href="https://www.facebook.com/emmanzp/"
+       target="_blank" rel="noopener noreferrer" aria-label="Daddy Facebook"></a>
+  </div>
+</section>
+
+<audio id="happyMusic" src="happy-birthday.wav" preload="auto" playsinline loop></audio>
+<audio id="music" src="doraemon-theme.wav" preload="auto" playsinline loop></audio>
+
+<div class="overlay" id="countdownModal">
+  <div class="card">
+    <h2>🎉 Countdown to Ezriel Xai's Birthday</h2>
+    <div id="countdownValue">Loading...</div>
+    <button class="close" id="closeCountdown" style="margin-top:18px;padding:13px 24px;border:0;border-radius:12px;cursor:pointer">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="rsvpModal">
+  <div class="card modal">
+    <h2>💙 RSVP for Ezriel Xai</h2>
+    <form id="rsvpForm">
+      <label for="guest">Your Name</label>
+      <input id="guest" required>
+      <label for="count">Number of Guests</label>
+      <input id="count" type="number" min="1" value="1" required>
+      <label for="message">Message (optional)</label>
+      <textarea id="message" placeholder="See you there!"></textarea>
+      <div class="actions">
+        <button type="button" class="close" id="closeRsvp">Close</button>
+        <button type="submit" class="send">Send RSVP</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- RSVP SUCCESS POPUP -->
+<div class="overlay" id="successModal">
+  <div class="success-card">
+
+    <div class="success-title">🎉 RSVP Confirmed!</div>
+<img src="ezriel.png" class="success-photo" alt="Ezriel">
+    <div class="success-thanks">
+      Thank you for your RSVP! 💙
+    </div>
+
+    <hr class="success-divider">
+
+    <div class="success-guests-label">
+      Number of Guests
+    </div>
+
+    <div class="success-guests" id="successGuests">
+      1
+    </div>
+
+    <div class="success-note">
+      <strong>Important:</strong><br>
+      Additional guests are subject to approval by Mommy and Daddy.
+      We will confirm if they can be included. 💙
+    </div>
+
+    <div class="success-message">
+      We're excited to celebrate with you! 🎉
+    </div>
+
+    <button class="success-ok" id="successOk">
+      OK 💙
+    </button>
+
+  </div>
+</div>
+
+<script>
+const pages=[document.getElementById('page1'),document.getElementById('page2'),document.getElementById('page3')];
+const happyMusic=document.getElementById('happyMusic');
+const music=document.getElementById('music');
+
+function showPage(n){
+  pages.forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+
+document.getElementById('p1Play').addEventListener('click',async()=>{
+  music.pause();
+  music.currentTime=0;
+  happyMusic.currentTime=0;
+  try{await happyMusic.play();}catch(e){console.log(e);}
+  showPage(1);
+});
+
+document.getElementById('p2Open').addEventListener('click',async()=>{
+  happyMusic.pause();
+  happyMusic.currentTime=0;
+  music.currentTime=0;
+  try{await music.play();}catch(e){console.log(e);}
+  showPage(2);
+});
+
+/* Countdown: October 3, 2026 at 8:30 AM Philippine time (UTC+8). */
+const countdownModal=document.getElementById('countdownModal');
+const countdownValue=document.getElementById('countdownValue');
+const birthdayTarget=new Date('2026-10-03T08:30:00+08:00').getTime();
+
+function updateCountdown(){
+  const diff=birthdayTarget-Date.now();
+  if(diff<=0){
+    countdownValue.textContent="🎉 It's party time!";
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff/3600000)%24;
+  const m=Math.floor(diff/60000)%60;
+  const s=Math.floor(diff/1000)%60;
+  countdownValue.textContent=`${d} Days • ${h} Hours • ${m} Minutes • ${s} Seconds`;
+}
+document.getElementById('p3DateTime').addEventListener('click',()=>{
+  updateCountdown();
+  countdownModal.classList.add('show');
+});
+document.getElementById('closeCountdown').addEventListener('click',()=>countdownModal.classList.remove('show'));
+countdownModal.addEventListener('click',e=>{if(e.target===countdownModal)countdownModal.classList.remove('show')});
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+/* RSVP */
+const rsvpModal=document.getElementById('rsvpModal');
+document.getElementById('p3Rsvp').addEventListener('click',()=>rsvpModal.classList.add('show'));
+document.getElementById('closeRsvp').addEventListener('click',()=>rsvpModal.classList.remove('show'));
+rsvpModal.addEventListener('click',e=>{if(e.target===rsvpModal)rsvpModal.classList.remove('show')});
+const successModal = document.getElementById("successModal");
+
+document.getElementById("successOk").addEventListener("click", () => {
+  successModal.classList.remove("show");
+});
+const RSVP_URL = "https://script.google.com/macros/s/AKfycbxSGBSvgJGRntr-68T4o9G4s0yZBa30z0jh8HvpAqAWMbEXghddk7WPokRYV3UpdXjGlw/exec";
+
+document.getElementById('rsvpForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const form = e.target;
+  const name = document.getElementById('guest').value.trim();
+  const count = document.getElementById('count').value;
+  const msg = document.getElementById('message').value.trim();
+
+  if (!name) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.append("name", name);
+  params.append("guests", count);
+  params.append("message", msg);
+
+  try {
+    await fetch(RSVP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: params.toString()
+    });
+
+document.getElementById("successGuests").textContent = count;
+document.getElementById("successModal").classList.add("show");
+
+    form.reset();
+    rsvpModal.classList.remove("show");
+
+  } catch (error) {
+    console.error(error);
+    alert("Sorry, there was a problem submitting your RSVP. Please try again.");
+  }
+});
+</script>
+</body>
+</html>
