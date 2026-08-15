@@ -411,7 +411,7 @@ function showPage(n){
 
       setTimeout(()=>{
         rsvpButton.classList.add('show-rsvp');
-      },10000);
+      },8000);
     }
   }
 }
@@ -479,7 +479,14 @@ setInterval(updateCountdown,1000);
 
 /* RSVP */
 const rsvpModal=document.getElementById('rsvpModal');
-document.getElementById('p3Rsvp').addEventListener('click',()=>rsvpModal.classList.add('show'));
+document.getElementById('p3Rsvp').addEventListener('click',()=>{
+  if(localStorage.getItem('rsvpSubmitted') === 'yes'){
+    alert('You have already submitted your RSVP. 💙');
+    return;
+  }
+
+  rsvpModal.classList.add('show');
+});
 document.getElementById('closeRsvp').addEventListener('click',()=>rsvpModal.classList.remove('show'));
 rsvpModal.addEventListener('click',e=>{if(e.target===rsvpModal)rsvpModal.classList.remove('show')});
 const successModal = document.getElementById("successModal");
@@ -518,6 +525,7 @@ document.getElementById('rsvpForm').addEventListener('submit', async e => {
     });
 
 document.getElementById("successGuests").textContent = count;
+    localStorage.setItem('rsvpSubmitted','yes');
 document.getElementById("successModal").classList.add("show");
 
     form.reset();
