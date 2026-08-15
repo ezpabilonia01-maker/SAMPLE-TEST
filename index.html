@@ -45,6 +45,15 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#087dcc;fon
              inset 0 0 10px rgba(255,255,255,.15);
   transition:.2s ease;
 }
+  #p3Rsvp{
+  opacity:0;
+  pointer-events:none;
+}
+
+#p3Rsvp.show-rsvp{
+  opacity:1;
+  pointer-events:auto;
+}
 
 #p3Rsvp:hover{
   transform:scale(1.03);
@@ -393,6 +402,18 @@ const music=document.getElementById('music');
 
 function showPage(n){
   pages.forEach((p,i)=>p.classList.toggle('active',i===n));
+
+  if(n === 2){
+    const rsvpButton = document.getElementById('p3Rsvp');
+
+    if(rsvpButton){
+      rsvpButton.classList.remove('show-rsvp');
+
+      setTimeout(()=>{
+        rsvpButton.classList.add('show-rsvp');
+      },60000);
+    }
+  }
 }
 
 document.getElementById('p1Play').addEventListener('click',async()=>{
